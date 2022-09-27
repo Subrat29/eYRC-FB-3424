@@ -1,7 +1,17 @@
-Hello guys this is iet khandari
-Let's push some changes...
+#include <stdio.h>
+int main() {    
 
-*******POEM********
-push karo push karo 
-karna h kuch kaam 
-shuru karo pushing leke prabhu ka naam...:)
+    int number1, number2, sum;
+    
+    printf("Enter two integers: ");
+    scanf("%d %d", &number1, &number2);
+
+    // calculating sum
+    sum = number1 + number2;      
+    
+    printf("%d + %d = %d", number1, number2, sum);
+    return 0;
+}
+
+
+
