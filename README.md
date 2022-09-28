@@ -1,17 +1,18 @@
-#include <stdio.h>
-int main() {    
+defmodule Task1aSumOfSubsets do
+      
+         def valid_sum(matrix_of_sum) do
 
-    int number1, number2, sum;
-    
-    printf("Enter two integers: ");
-    scanf("%d %d", &number1, &number2);
+         end
 
-    // calculating sum
-    sum = number1 + number2;      
-    
-    printf("%d + %d = %d", number1, number2, sum);
-    return 0;
-}
+         def sum_of_one(array_of_digits, sum_val) do
+
+         end
+     
+         def sum_of_all(array_of_digits,matrix_of_sum) do
+
+         end
+         
+       end
 
 
 
