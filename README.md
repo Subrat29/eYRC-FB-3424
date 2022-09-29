@@ -13,6 +13,8 @@ defmodule Task1aSumOfSubsets do
          end
          
        end
+       
+       IO.puts " hello world"
 
 
 
