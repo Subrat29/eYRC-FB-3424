@@ -62,3 +62,54 @@ defmodule Task1aSumOfSubsets do
     |> sub_sets()
     |> Enum.filter(&(Enum.sum(&1) == sum_val))
   end
+
+  defp sub_sets([]), do: [[]]
+
+  defp sub_sets([h | t]) do
+    t |> sub_sets() |> Enum.flat_map(&[[h | &1], &1])
+  end
+
+  @doc """
+  #Function name:
+         sum_of_all
+  #Inputs:
+         array_of_digits : Array containing single digit numbers to satisty sum
+         matrix_of_sum   : A 2d matrix containing two digit numbers for which subsebts are to be created
+  #Output:
+         Map of each sum value and it's respective subsets
+  #Details:
+         Finds the all possible subsets from given array of digits for all valid sums elements of given 2d matrix
+  #Example call:
+    if given array of digits is as follows:
+      array_of_digits = [3, 5, 2, 7, 4, 2, 3]
+    and if given 2d matrix is as follows:
+      matrix_of_sum = [
+                        [21 ,"na", "na", "na", 12],
+                        ["na", "na", 12, "na", "na"],
+                        ["na", "na", "na", "na", "na"],
+                        [17, "na", "na", "na", "na"],
+                        ["na", 22, "na", "na", "na"]
+                      ]
+
+      iex(1)> array_of_digits = [3, 5, 2, 7, 4, 2, 3]
+      iex(2)> matrix_of_sum = [
+      ...(2)>                   [21 ,"na", "na", "na", 12],
+      ...(2)>                   ["na", "na", 12, "na", "na"],
+      ...(2)>                   ["na", "na", "na", "na", "na"],
+      ...(2)>                   [17, "na", "na", "na", "na"],
+      ...(2)>                   ["na", 22, "na", "na", "na"]
+      ...(2)>                 ]
+      iex(3)> Task1aSumOfSubsets.sum_of_all(array_of_digits, matrix_of_sum)
+      %{
+        12 => [[3, 2, 7],[3, 7, 2],[3, 4, 5],[7, 5],[3, 2, 2, 5],[3, 2, 4, 3],[2, 7, 3],[3, 4, 2, 3],[7, 2, 3],[4, 5, 3],[2, 2, 5, 3]],
+        17 => [[3, 2, 7, 5],[3, 7, 2, 5],[3, 4, 7, 3],[3, 2, 7, 2, 3],[3, 2, 4, 5, 3],[2, 7, 5, 3],[3, 4, 2, 5, 3],[7, 2, 5, 3]],
+        21 => [[3, 2, 4, 7, 5],[3, 4, 7, 2, 5],[3, 2, 4, 7, 2, 3],[2, 4, 7, 5, 3],[4, 7, 2, 5, 3]],
+        22 => [[3, 4, 7, 5, 3], [3, 2, 7, 2, 5, 3]]
+      }
+  """
+  def sum_of_all(array_of_digits, matrix_of_sum) do
+    list = Enum.uniq(valid_sum(matrix_of_sum))
+    #array_of_digits  |> Enum.reject( fn x -> x == 0 end )
+    Enum.reduce(list, %{}, fn n, acc -> Map.put(acc, n, sum_of_one(array_of_digits, n)) end)
+  end
+end
