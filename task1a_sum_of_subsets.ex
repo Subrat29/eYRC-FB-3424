@@ -58,9 +58,14 @@ defmodule Task1aSumOfSubsets do
   """
 
   def sum_of_one(array_of_digits, sum_val) do
-    array_of_digits |> Enum.reject( fn x -> x == 0 end )
-    |> sub_sets()
-    |> Enum.filter(&(Enum.sum(&1) == sum_val))
+    if sum_val == 0 do
+      []
+    else
+      array_of_digits
+      |> Enum.reject(fn x -> x == 0 end)
+      |> sub_sets()
+      |> Enum.filter(&(Enum.sum(&1) == sum_val))
+    end
   end
 
   defp sub_sets([]), do: [[]]
@@ -109,7 +114,6 @@ defmodule Task1aSumOfSubsets do
   """
   def sum_of_all(array_of_digits, matrix_of_sum) do
     list = Enum.uniq(valid_sum(matrix_of_sum))
-    #array_of_digits  |> Enum.reject( fn x -> x == 0 end )
     Enum.reduce(list, %{}, fn n, acc -> Map.put(acc, n, sum_of_one(array_of_digits, n)) end)
   end
 end
