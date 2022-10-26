@@ -4,8 +4,7 @@ defmodule Task1bNumberDetection do
   """
   alias Evision, as: OpenCV
 
-  # This function is used to read an image from a given file..
-  #path = "images/grid_1.png" TesseractOcr.read("path")
+  # This function is used to read an image from a given file
   def get_img_ref(path) do
     {:ok, image} = OpenCV.imread(path)
     image
@@ -51,15 +50,18 @@ defmodule Task1bNumberDetection do
       iex(1)> Task1bNumberDetection.identifyCellNumbers("images/grid_1.png")
       [["22", "na", "na"], ["na", "na", "16"], ["na", "25", "na"]]
   """
-  def identifyCellNumbers(image) do
-    # mat = get_img_ref("images/grid_1.png")
+  def identifyCellNumbers("images/grid_1.png") do
 
-    mat = get_gray_img_ref("images/grid_1.png")
-    mat_tensor = Evision.Nx.to_nx(mat)
-   # findContours(Evision.Mat.maybe_mat_in(), integer(), integer())
-    #  |> Nx.slice([0,0,0], [1080,1080,3])
-    tensor_mat = Evision.Nx.to_mat(mat_tensor)
+    mat1 = get_gray_img_ref("images/grid_1.png") |> resize(500, 500)
+    mat_tensor = Evision.Nx.to_nx(mat1)
+    crop = Nx.slice(mat_tensor, [0, 0], [500, 500])
+    tensor_mat = Evision.Nx.to_mat(crop)
+    show(tensor_mat)
 
+    #OpenCV.findContours(mat1, Evision.cv_RETR_TREE, Evision.cv_CHAIN_APPROX_NONE)
+    #tensor_mat = Evision.Nx.to_mat(mat_tensor)
+    #Nx.to_binary()
+    # TesseractOcr.read(path)
     # Evision.Nx.to_nx(image)
     # |> Nx.slice([0,0,0], [1080,1080,3])
     # |> Evision.Nx.to_mat(image)
@@ -120,3 +122,4 @@ defmodule Task1bNumberDetection do
     end)
   end
 end
+
