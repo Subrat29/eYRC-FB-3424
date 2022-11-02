@@ -4,36 +4,23 @@ defmodule Task1bNumberDetection do
   """
   alias Evision, as: OpenCV
 
-  # This function is used to read an image from a given file
   def get_img_ref(path) do
     {:ok, image} = OpenCV.imread(path)
     image
   end
 
-  # This function is used to read an image
-  # from a given file as grayscale
   def get_gray_img_ref(path) do
     OpenCV.imread!(path, flags: OpenCV.cv_IMREAD_GRAYSCALE())
   end
 
-  # This is the most useful function which is
-  # used to display the image
   def show(image) do
     OpenCV.HighGui.imshow!("image", image)
     OpenCV.HighGui.waitkey!(7000)
     OpenCV.HighGui.destroyWindow!("image")
   end
 
-  # This function is used to resize a given image
   def resize(image, width, height) do
     OpenCV.resize!(image, [_width = width, _height = height])
-  end
-
-  # The main function which reads the image as graysacale using "get_gray_img_ref" function
-  # while cropping it as per sepcified dimensions using "crop" function
-  # and displays it using "show" function
-  def main do
-    get_img_ref("images/grid_1.png") |> resize(500, 500) |> show
   end
 
   @doc """
@@ -50,22 +37,33 @@ defmodule Task1bNumberDetection do
       iex(1)> Task1bNumberDetection.identifyCellNumbers("images/grid_1.png")
       [["22", "na", "na"], ["na", "na", "16"], ["na", "25", "na"]]
   """
-  def identifyCellNumbers("images/grid_1.png") do
+  def identifyCellNumbers(path) do
 
-    mat1 = get_gray_img_ref("images/grid_1.png") |> resize(500, 500)
-    mat_tensor = Evision.Nx.to_nx(mat1)
-    crop = Nx.slice(mat_tensor, [0, 0], [500, 500])
-    tensor_mat = Evision.Nx.to_mat(crop)
-    show(tensor_mat)
+       img = get_img_ref(path)
+       imgGrey = get_gray_img_ref(path)
+       {:ok, {_, thrash}} =OpenCV.threshold(imgGrey, 240, 255, OpenCV.cv_THRESH_BINARY())
+       {:ok, {contours, _}} =OpenCV.findContours(thrash, OpenCV.cv_RETR_EXTERNAL(), OpenCV.cv_CHAIN_APPROX_SIMPLE())
+       {:ok, d} = OpenCV.drawContours(img, contours, -1, [0, 255, 0], thickness: 20)
+       h = resize(d,500,500)
+       show(h)
 
-    #OpenCV.findContours(mat1, Evision.cv_RETR_TREE, Evision.cv_CHAIN_APPROX_NONE)
-    #tensor_mat = Evision.Nx.to_mat(mat_tensor)
-    #Nx.to_binary()
-    # TesseractOcr.read(path)
-    # Evision.Nx.to_nx(image)
-    # |> Nx.slice([0,0,0], [1080,1080,3])
-    # |> Evision.Nx.to_mat(image)
-  end
+        #to save image-------------------------------------
+        #mat = get_img_ref(h)
+        #mat_tensor = Evision.Nx.to_nx(d)
+        #crop = Nx.slice(mat_tensor, [222,130,3], [821,821,3])
+        #tensor_mat= Evision.Nx.to_mat!(crop)
+    #   OpenCV.imwrite("images/grid_7.png",tensor_mat)
+       #show(tensor_mat)
+       #TesseractOcr.read(image)
+       #---------------------------------------------------
+
+       #cv.RETR_LIST, cv.RETR_TREE, cv.RETR_CCOMP, cv.RETR_EXTERNAL
+       #{:ok, d} = OpenCV.rectangle(imgGrey, [50,10], [125,60], [0, 255, 0])
+       #show(d)
+
+end
+# for n <- [1, 2, 3, 4], do: n * 2
+# import Task1bNumberDetection
 
   @doc """
   #Function name:
@@ -84,6 +82,10 @@ defmodule Task1bNumberDetection do
         [{"22", 1}, {"16", 6}, {"25", 8}]
   """
   def identifyCellNumbersWithLocations(matrix) do
+       matrix
+    |> List.flatten()
+    |> Enum.with_index(1)
+    |> Enum.filter(fn {val, _loc} -> val != "na" end)
   end
 
   @doc """
@@ -102,7 +104,7 @@ defmodule Task1bNumberDetection do
       iex(1)> Task1bNumberDetection.driver("images/")
       [
         {"grid_1.png", [{"22", 1}, {"16", 6}, {"25", 8}]},
-        {"grid_2.png", [{"13", 3}, {"27", 5}, {"20", 7}]},
+        {"grid_2.png", [{"13", 3}, {"21", 5}, {"20", 7}]},
         {"grid_3.png", [{"17", 3}, {"20", 4}, {"11", 5}, {"15", 9}]},
         {"grid_4.png", []},
         {"grid_5.png", [{"13", 1}, {"19", 2}, {"17", 3}, {"20", 4}, {"16", 5}, {"11", 6}, {"24", 7}, {"15", 8}, {"28", 9}]},
@@ -122,4 +124,5 @@ defmodule Task1bNumberDetection do
     end)
   end
 end
+
 
